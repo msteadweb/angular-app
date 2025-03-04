@@ -8,11 +8,11 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { firebaseConfig } from './environments/firebase.config';
-import { routes } from './app/routes'; // ✅ Correct import path
+import { routes } from './app/routes'; // ✅ Ensure correct path
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes), // ✅ Use the correct routes
+    provideRouter(routes), // ✅ Provide routes here
     importProvidersFrom(FormsModule),
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
