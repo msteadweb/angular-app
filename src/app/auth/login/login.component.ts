@@ -29,14 +29,16 @@ export class LoginComponent implements OnInit {
 
   async login() {
     this.errorMessage = null;
-    this.isLoading = true; // ✅ Set `isLoading` to true
+    this.isLoading = true; // ✅ Start loading
+  
     try {
       await signInWithEmailAndPassword(this.auth, this.email, this.password);
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/dashboard']); // Redirect on success
     } catch (error: any) {
       this.errorMessage = error.message;
     } finally {
-      this.isLoading = false; // ✅ Reset `isLoading` after login attempt
+      this.isLoading = false; // ✅ Stop loading
     }
   }
+  
 }
