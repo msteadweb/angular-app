@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnDestroy {
   user: User | null = null;
   isLoading = true;
-  private authSubscription: (() => void) | null = null; // ✅ Store unsubscribe function
+  private authSubscription: (() => void) | null = null; // ✅ Correct type for unsubscribe function
 
   constructor(private auth: Auth, private router: Router) {
     this.authSubscription = onAuthStateChanged(this.auth, (user) => {
@@ -29,7 +29,8 @@ export class DashboardComponent implements OnDestroy {
 
   ngOnDestroy() {
     if (this.authSubscription) {
-      this.authSubscription(); // ✅ Unsubscribe to avoid memory leaks
+      this.authSubscription(); // ✅ Properly unsubscribe
+      this.authSubscription = null; // ✅ Avoid multiple calls
     }
   }
 }
