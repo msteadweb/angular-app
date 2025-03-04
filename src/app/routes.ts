@@ -12,5 +12,5 @@ export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'email-verification', component: EmailVerificationComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] }, // ✅ Protect dashboard
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] }, // Protect dashboard
 ];
