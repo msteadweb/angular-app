@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +11,7 @@ export class AuthService {
   async signup(email: string, password: string) {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      await sendEmailVerification(userCredential.user); // ✅ Send email verification after signup
       console.log('User signed up:', userCredential.user);
       return userCredential.user;
     } catch (error: any) {

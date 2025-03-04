@@ -1,0 +1,6 @@
+<h2>Email Verification</h2>
+<p *ngIf="message" class="success">{{ message }}</p>
+<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+<button (click)="sendVerificationEmail()" [disabled]="isProcessing">
+  {{ isProcessing ? 'Sending...' : 'Send Verification Email' }}
+</button>
