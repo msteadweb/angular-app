@@ -3,43 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AngularJS App</title>
+    <title>AngularJS User List</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AngularJS CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background: #f3f3f3;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-    </style>
 </head>
-<body>
-    <div ng-controller="MainController">
-        <h1>{{ message }}</h1>
-        <button ng-click="fetchUsers()">Fetch Users</button>
-        <ul>
-            <li ng-repeat="user in users">
-                {{ user.name }} - {{ user.email }}
+<body class="bg-gray-100 text-gray-900">
+    <div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg" ng-controller="MainController">
+        <h1 class="text-2xl font-bold text-center mb-4">{{ message }}</h1>
+        
+        <!-- Search Input -->
+        <input type="text" ng-model="searchText" placeholder="Search users..." 
+            class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        
+        <!-- Fetch Users Button -->
+        <button ng-click="fetchUsers()" 
+            class="w-full bg-blue-500 text-white py-2 mt-3 rounded-md hover:bg-blue-600">
+            Fetch Users
+        </button>
+
+        <!-- User List -->
+        <ul class="mt-4 space-y-2">
+            <li ng-repeat="user in users | filter:searchText" 
+                class="p-3 bg-gray-200 rounded-md shadow-md">
+                <strong>{{ user.name }}</strong> - <span class="text-gray-600">{{ user.email }}</span>
             </li>
         </ul>
     </div>
 
     <script>
         var app = angular.module("myApp", []);
-        
+
         app.controller("MainController", function($scope, $http) {
-            $scope.message = "Hello, AngularJS!";
+            $scope.message = "User List App";
             $scope.users = [];
+            $scope.searchText = "";
 
             $scope.fetchUsers = function() {
                 $http.get("https://jsonplaceholder.typicode.com/users")
