@@ -1,17 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  setPersistence,
+  browserLocalPersistence,
+  User
+} from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private auth: Auth) {}
+  constructor(private auth: Auth) {
+    // ✅ Ensure user session persists across page refreshes
+    setPersistence(this.auth, browserLocalPersistence);
+  }
 
-  // ✅ Signup method for Firebase Authentication
+  // ✅ Signup method (Registers user and sends email verification)
   async signup(email: string, password: string) {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-      await sendEmailVerification(userCredential.user); // ✅ Send email verification after signup
+      await sendEmailVerification(userCredential.user); // Send verification email
       console.log('User signed up:', userCredential.user);
       return userCredential.user;
     } catch (error: any) {
@@ -20,18 +32,19 @@ export class AuthService {
     }
   }
 
-  // ✅ Login method
+  // ✅ Login method (Prevents login if email is not verified)
   async login(email: string, password: string): Promise<string | null> {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       const user = userCredential.user;
 
-      // ✅ Check if email is verified
+      // ✅ Reload user to get updated email verification status
       await user.reload();
       if (!user.emailVerified) {
         return 'Please verify your email before logging in.';
       }
 
+      console.log('User logged in:', user);
       return null; // No errors, login successful
     } catch (error: any) {
       return error.message; // Return error message to display
@@ -47,6 +60,11 @@ export class AuthService {
       console.error('Logout error:', error);
       throw new Error('Logout failed. Please try again.');
     }
+  }
+
+  // ✅ Method to check if a user is logged in
+  getCurrentUser(): User | null {
+    return this.auth.currentUser;
   }
 
   // ✅ Error handling method
