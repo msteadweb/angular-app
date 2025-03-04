@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Auth, User } from '@angular/fire/auth';
+import { CommonModule } from '@angular/common'; // ✅ Import CommonModule for *ngIf
+import { Auth, User, onAuthStateChanged, signOut } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,18 +8,22 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
+  imports: [CommonModule], // ✅ Add CommonModule
 })
 export class DashboardComponent {
   user: User | null = null;
+  isLoading = true; // ✅ Helps prevent UI flickering
 
   constructor(private auth: Auth, private router: Router) {
-    this.auth.onAuthStateChanged((user) => {
+    // ✅ Ensure user state updates correctly
+    onAuthStateChanged(this.auth, (user) => {
       this.user = user;
+      this.isLoading = false; // ✅ Stop loading after checking auth state
     });
   }
 
   async logout() {
-    await this.auth.signOut();
+    await signOut(this.auth);
     this.router.navigate(['/login']);
   }
 }

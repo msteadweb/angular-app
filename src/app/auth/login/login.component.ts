@@ -1,36 +1,30 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // ✅ Import for *ngIf
+import { FormsModule } from '@angular/forms'; // ✅ Import for [(ngModel)]
+import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule], // ✅ Required for *ngIf and ngModel
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  imports: [CommonModule, FormsModule], // ✅ Add required modules
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  errorMessage: string = '';
+  email = '';
+  password = '';
+  errorMessage: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private auth: Auth, private router: Router) {}
 
   async login() {
-    this.errorMessage = '';
-
-    if (!this.email || !this.password) {
-      this.errorMessage = 'Email and password are required!';
-      return;
-    }
-
-    const error = await this.authService.login(this.email, this.password);
-    if (error) {
-      this.errorMessage = error;
-    } else {
-      this.router.navigate(['/dashboard']);
+    this.errorMessage = null; // ✅ Clear previous error
+    try {
+      await signInWithEmailAndPassword(this.auth, this.email, this.password);
+      this.router.navigate(['/dashboard']); // ✅ Redirect to dashboard on success
+    } catch (error: any) {
+      this.errorMessage = error.message; // ✅ Show error message
     }
   }
 }

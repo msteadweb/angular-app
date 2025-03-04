@@ -1,9 +1,13 @@
-<div class="dashboard">
-    <h2>Welcome to Your Dashboard</h2>
-  
-    <p *ngIf="user">Logged in as: {{ user.email }}</p>
-    <p *ngIf="!user">Loading user data...</p>
-  
-    <button (click)="logout()">Logout</button>
-  </div>
-  
+<!-- ✅ Show loading message while checking auth state -->
+<p *ngIf="isLoading">Checking authentication...</p>
+
+<!-- ✅ Show user info if logged in -->
+<div *ngIf="!isLoading && user">
+  <p>Welcome, {{ user.email }}</p>
+  <button (click)="logout()">Logout</button>
+</div>
+
+<!-- ✅ Redirect to login if not logged in -->
+<p *ngIf="!isLoading && !user">
+  Not logged in. Redirecting...
+</p>
