@@ -1,6 +1,21 @@
 <h2>Email Verification</h2>
-<p *ngIf="message" class="success">{{ message }}</p>
-<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+<!-- ✅ Show success or error messages -->
+<p *ngIf="message" class="success-message">{{ message }}</p>
+<p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+<!-- ✅ Button to send verification email -->
 <button (click)="sendVerificationEmail()" [disabled]="isProcessing">
   {{ isProcessing ? 'Sending...' : 'Send Verification Email' }}
+</button>
+
+<!-- ✅ Notify user that email was sent -->
+<p *ngIf="emailSent">If you haven't received the email, you can request a new one below.</p>
+
+<!-- ✅ Show countdown before displaying the "Resend" button -->
+<p *ngIf="!showResendButton && emailSent">You can resend the verification email in {{ countdown }}s</p>
+
+<!-- ✅ Resend button appears only after 60 seconds -->
+<button *ngIf="showResendButton" (click)="resendVerificationEmail()">
+  Resend Verification Email
 </button>

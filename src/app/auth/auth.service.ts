@@ -21,14 +21,20 @@ export class AuthService {
   }
 
   // ✅ Login method
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<string | null> {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      console.log('User logged in:', userCredential.user);
-      return userCredential.user;
+      const user = userCredential.user;
+
+      // ✅ Check if email is verified
+      await user.reload();
+      if (!user.emailVerified) {
+        return 'Please verify your email before logging in.';
+      }
+
+      return null; // No errors, login successful
     } catch (error: any) {
-      console.error('Login error:', error);
-      throw new Error(this.getErrorMessage(error.code));
+      return error.message; // Return error message to display
     }
   }
 
