@@ -1,24 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Auth, User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
+export class DashboardComponent {
+  user: User | null = null;
 
-  ngOnInit() {
-    const user = this.authService.getCurrentUser();
-    if (!user) {
-      this.router.navigate(['/login']); // Redirect if no user is logged in
-    }
+  constructor(private auth: Auth, private router: Router) {
+    this.auth.onAuthStateChanged((user) => {
+      this.user = user;
+    });
   }
 
-  logout() {
-    this.authService.logout();
+  async logout() {
+    await this.auth.signOut();
+    this.router.navigate(['/login']);
   }
 }
