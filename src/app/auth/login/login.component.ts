@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth.service';  // ✅ Import AuthService
+import { Router } from '@angular/router'; // ✅ Import Router for navigation
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],  // ✅ Ensure FormsModule is imported
+  imports: [FormsModule, CommonModule], 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -14,7 +16,9 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  login() {
+  constructor(private authService: AuthService, private router: Router) {} // ✅ Inject AuthService & Router
+
+  async login() {
     this.errorMessage = ''; // Reset error message before processing
 
     if (!this.email || !this.password) {
@@ -22,6 +26,12 @@ export class LoginComponent {
       return;
     }
 
-    console.log('Login clicked with:', this.email, this.password);
+    try {
+      const user = await this.authService.login(this.email, this.password);
+      console.log('User logged in:', user);
+      this.router.navigate(['/dashboard']); // ✅ Redirect after login
+    } catch (error: any) {
+      this.errorMessage = error.message; // ✅ Display error message
+    }
   }
 }
