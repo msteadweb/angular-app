@@ -5,6 +5,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { EmailVerificationComponent } from './auth/email-verification/email-verification.component';
 import { AuthGuard } from './auth/auth.guard'; // ✅ Add auth guard
+import { SettingsComponent } from './settings/settings.component';
+
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,4 +15,7 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'email-verification', component: EmailVerificationComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] }, // Protect dashboard
+  { path: 'settings', component: SettingsComponent }, // ✅ New route
+  { path: '**', redirectTo: 'dashboard' }
+
 ];

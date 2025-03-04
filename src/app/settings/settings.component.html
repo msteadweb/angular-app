@@ -1,0 +1,16 @@
+<div class="settings-container">
+    <h2>Update Profile</h2>
+    <form (submit)="updateProfile()">
+      <label for="name">Display Name:</label>
+      <input type="text" id="name" [(ngModel)]="displayName" required />
+  
+      <label for="photo">Photo URL:</label>
+      <input type="text" id="photo" [(ngModel)]="photoURL" />
+  
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Updating...' : 'Update Profile' }}
+      </button>
+    </form>
+    <p *ngIf="message">{{ message }}</p>
+  </div>
+  
