@@ -7,14 +7,22 @@ import {
   signOut,
   setPersistence,
   browserLocalPersistence,
-  User
+  User,
+  onAuthStateChanged
 } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private auth: Auth) {}
+  private currentUser: User | null = null; // Store current user
+
+  constructor(private auth: Auth) {
+    // ✅ Listen for auth state changes
+    onAuthStateChanged(this.auth, (user) => {
+      this.currentUser = user;
+    });
+  }
 
   // ✅ Signup method (Registers user and sends email verification)
   async signup(email: string, password: string) {
@@ -29,10 +37,10 @@ export class AuthService {
     }
   }
 
-  // ✅ Login method (Prevents login if email is not verified)
+  // ✅ Login method (Ensures session persistence)
   async login(email: string, password: string): Promise<string | null> {
     try {
-      // ✅ Ensure session persists across refreshes
+      // ✅ Set persistence before attempting login
       await setPersistence(this.auth, browserLocalPersistence);
 
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
@@ -44,6 +52,7 @@ export class AuthService {
         return 'Please verify your email before logging in.';
       }
 
+      this.currentUser = user; // Store the logged-in user
       console.log('User logged in:', user);
       return null; // No errors, login successful
     } catch (error: any) {
@@ -55,6 +64,7 @@ export class AuthService {
   async logout() {
     try {
       await signOut(this.auth);
+      this.currentUser = null; // Clear the stored user
       console.log('User logged out');
     } catch (error: any) {
       console.error('Logout error:', error);
@@ -62,9 +72,18 @@ export class AuthService {
     }
   }
 
-  // ✅ Method to check if a user is logged in
+  // ✅ Method to check if a user is logged in (ensures persistence)
+  async isLoggedIn(): Promise<boolean> {
+    return new Promise((resolve) => {
+      onAuthStateChanged(this.auth, (user) => {
+        resolve(!!user);
+      });
+    });
+  }
+
+  // ✅ Get the current user
   getCurrentUser(): User | null {
-    return this.auth.currentUser;
+    return this.currentUser;
   }
 
   // ✅ Error handling method
