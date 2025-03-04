@@ -14,10 +14,7 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private auth: Auth) {
-    // ✅ Ensure user session persists across page refreshes
-    setPersistence(this.auth, browserLocalPersistence);
-  }
+  constructor(private auth: Auth) {}
 
   // ✅ Signup method (Registers user and sends email verification)
   async signup(email: string, password: string) {
@@ -35,6 +32,9 @@ export class AuthService {
   // ✅ Login method (Prevents login if email is not verified)
   async login(email: string, password: string): Promise<string | null> {
     try {
+      // ✅ Ensure session persists across refreshes
+      await setPersistence(this.auth, browserLocalPersistence);
+
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       const user = userCredential.user;
 
