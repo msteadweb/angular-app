@@ -4,11 +4,11 @@ app.controller("MainController", function ($scope, $http) {
     $scope.users = [];
     $scope.darkMode = localStorage.getItem("darkMode") === "true";
 
-    // Fetch users
+    // Fetch users from randomuser.me
     $scope.fetchUsers = function () {
-        $http.get("https://jsonplaceholder.typicode.com/users")
+        $http.get("https://randomuser.me/api/?results=10")
             .then(function (response) {
-                $scope.users = response.data;
+                $scope.users = response.data.results;
             });
     };
 
@@ -32,9 +32,9 @@ app.controller("ProfileController", function ($scope, $http, $location) {
     var userId = getUserIdFromUrl();
 
     // Fetch user details
-    $http.get(`https://jsonplaceholder.typicode.com/users/${userId}`)
+    $http.get(`https://randomuser.me/api/?seed=${userId}`)
         .then(function (response) {
-            $scope.user = response.data;
+            $scope.user = response.data.results[0];
         });
 
     // Toggle Dark Mode
