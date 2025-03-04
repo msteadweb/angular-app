@@ -1,7 +1,7 @@
-import { Component, inject, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, onAuthStateChanged } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,29 +11,29 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css'],
   imports: [CommonModule, FormsModule],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email = '';
   password = '';
   errorMessage: string | null = null;
 
-  private auth = inject(Auth);
-  private router = inject(Router);
-  private ngZone = inject(NgZone); // ✅ Inject Angular's Zone
+  constructor(private auth: Auth, private router: Router) {}
+
+  ngOnInit() {
+    // Check if the user is already logged in
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.router.navigate(['/dashboard']); // ✅ Redirect to dashboard if already logged in
+      }
+    });
+  }
 
   async login() {
-    this.errorMessage = null; 
+    this.errorMessage = null;
     try {
-      const userCredential = await signInWithEmailAndPassword(this.auth, this.email, this.password);
-      
-      // ✅ Ensure Angular runs the navigation inside its zone
-      this.ngZone.run(() => {
-        this.router.navigate(['/dashboard']);
-      });
-
+      await signInWithEmailAndPassword(this.auth, this.email, this.password);
+      this.router.navigate(['/dashboard']); // ✅ Redirect to dashboard on successful login
     } catch (error: any) {
-      this.ngZone.run(() => {
-        this.errorMessage = error.message;
-      });
+      this.errorMessage = error.message;
     }
   }
 }

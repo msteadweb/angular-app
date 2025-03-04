@@ -4,18 +4,26 @@ import { provideRouter } from '@angular/router';
 import { importProvidersFrom } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideAuth, getAuth, browserLocalPersistence, initializeAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { firebaseConfig } from './environments/firebase.config';
-import { routes } from './app/routes'; // ✅ Ensure correct path
+import { routes } from './app/routes';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes), // ✅ Provide routes here
+    provideRouter(routes),
     importProvidersFrom(FormsModule),
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideAuth(() => getAuth()),
+    provideFirebaseApp(() => {
+      const app = initializeApp(firebaseConfig);
+      initializeAuth(app, { persistence: browserLocalPersistence }); // ✅ Explicit persistence
+      return app;
+    }),
+    provideAuth(() => {
+      const auth = getAuth();
+      auth.setPersistence(browserLocalPersistence); // ✅ Ensure persistence
+      return auth;
+    }),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
   ],
