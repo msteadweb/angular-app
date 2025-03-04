@@ -86,41 +86,45 @@
     </div>
 
     <script>
-        var app = angular.module("myApp", []);
+    var app = angular.module("myApp", []);
 
-        app.controller("MainController", function($scope, $http) {
-            $scope.message = "User List App";
-            $scope.users = [];
-            $scope.searchText = "";
+    app.controller("MainController", function ($scope, $http) {
+        $scope.message = "User List App";
+        $scope.users = [];
+        $scope.searchText = "";
+        $scope.selectedUser = null;
+
+        // Load dark mode preference from localStorage
+        $scope.darkMode = localStorage.getItem("darkMode") === "true";
+
+        // Fetch users from API
+        $scope.fetchUsers = function () {
+            $http.get("https://jsonplaceholder.typicode.com/users")
+                .then(function (response) {
+                    $scope.users = response.data;
+                })
+                .catch(function (error) {
+                    console.error("Error fetching users:", error);
+                });
+        };
+
+        // Select a user to show details
+        $scope.selectUser = function (user) {
+            $scope.selectedUser = user;
+        };
+
+        // Close modal
+        $scope.closeModal = function () {
             $scope.selectedUser = null;
-            $scope.darkMode = false;
+        };
 
-            // Fetch users from API
-            $scope.fetchUsers = function() {
-                $http.get("https://jsonplaceholder.typicode.com/users")
-                    .then(function(response) {
-                        $scope.users = response.data;
-                    })
-                    .catch(function(error) {
-                        console.error("Error fetching users:", error);
-                    });
-            };
+        // Toggle Dark Mode and Save Preference
+        $scope.toggleDarkMode = function () {
+            $scope.darkMode = !$scope.darkMode;
+            localStorage.setItem("darkMode", $scope.darkMode);
+        };
+    });
 
-            // Select a user to show details
-            $scope.selectUser = function(user) {
-                $scope.selectedUser = user;
-            };
-
-            // Close modal
-            $scope.closeModal = function() {
-                $scope.selectedUser = null;
-            };
-
-            // Toggle Dark Mode
-            $scope.toggleDarkMode = function() {
-                $scope.darkMode = !$scope.darkMode;
-            };
-        });
     </script>
 </body>
 </html>
