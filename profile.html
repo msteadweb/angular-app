@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body ng-controller="ProfileController" ng-class="{'bg-gray-900 text-white': darkMode, 'bg-gray-100 text-gray-900': !darkMode}">
+
+    <div class="max-w-lg mx-auto mt-10 p-6 shadow-lg rounded-lg" ng-class="{'bg-gray-800': darkMode, 'bg-white': !darkMode}">
+        <button ng-click="toggleDarkMode()" class="mb-4 px-4 py-2 rounded-md"
+                ng-class="{'bg-yellow-500 text-black': darkMode, 'bg-gray-800 text-white': !darkMode}">
+            Toggle Dark Mode 🌙
+        </button>
+
+        <h1 class="text-2xl font-bold text-center mb-4">User Profile</h1>
+
+        <div class="text-center">
+            <img ng-src="https://i.pravatar.cc/100?u={{user.email}}" class="w-20 h-20 mx-auto rounded-full mb-4">
+            <h2 class="text-xl font-bold">{{ user.name }}</h2>
+            <p class="text-gray-500">{{ user.email }}</p>
+            <p><strong>Phone:</strong> {{ user.phone }}</p>
+            <p><strong>Company:</strong> {{ user.company.name }}</p>
+            <p><strong>Website:</strong> <a href="https://{{ user.website }}" target="_blank" class="text-blue-400">{{ user.website }}</a></p>
+        </div>
+
+        <a href="index.html" class="block mt-4 px-4 py-2 bg-red-500 text-white rounded-md text-center">Back to Users</a>
+    </div>
+
+</body>
+</html>

@@ -3,128 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AngularJS User List</title>
-    
-    <!-- Tailwind CSS CDN -->
+    <title>User List</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- AngularJS CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-
-    <style>
-        /* Modal fade-in animation */
-        .fade-enter {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-        }
-        .fade-enter-active {
-            opacity: 1;
-            transform: scale(1);
-        }
-    </style>
+    <script src="app.js"></script>
 </head>
 <body ng-controller="MainController" ng-class="{'bg-gray-900 text-white': darkMode, 'bg-gray-100 text-gray-900': !darkMode}">
 
-    <div class="max-w-2xl mx-auto mt-10 p-6 shadow-lg rounded-lg"
-         ng-class="{'bg-gray-800 text-white': darkMode, 'bg-white text-black': !darkMode}">
-        
-        <!-- Dark Mode Toggle -->
-        <button ng-click="toggleDarkMode()" 
-            class="mb-4 px-4 py-2 rounded-md"
-            ng-class="{'bg-yellow-500 text-black': darkMode, 'bg-gray-800 text-white': !darkMode}">
+    <div class="max-w-2xl mx-auto mt-10 p-6 shadow-lg rounded-lg" ng-class="{'bg-gray-800': darkMode, 'bg-white': !darkMode}">
+        <button ng-click="toggleDarkMode()" class="mb-4 px-4 py-2 rounded-md" 
+                ng-class="{'bg-yellow-500 text-black': darkMode, 'bg-gray-800 text-white': !darkMode}">
             Toggle Dark Mode 🌙
         </button>
 
-        <h1 class="text-2xl font-bold text-center mb-4">{{ message }}</h1>
-        
-        <!-- Search Input -->
-        <input type="text" ng-model="searchText" placeholder="Search users..." 
-            class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ng-class="{'bg-gray-700 text-white border-gray-500': darkMode, 'bg-white text-black border-gray-300': !darkMode}">
+        <h1 class="text-2xl font-bold text-center mb-4">User List</h1>
 
-        <!-- Fetch Users Button -->
-        <button ng-click="fetchUsers()" 
-            class="w-full bg-blue-500 text-white py-2 mt-3 rounded-md hover:bg-blue-600">
+        <button ng-click="fetchUsers()" class="w-full bg-blue-500 text-white py-2 mt-3 rounded-md hover:bg-blue-600">
             Fetch Users
         </button>
 
-        <!-- User List -->
         <ul class="mt-4 space-y-2">
-            <li ng-repeat="user in users | filter:searchText" 
-                class="p-3 flex items-center space-x-4 rounded-md shadow-md cursor-pointer hover:bg-blue-400 transition-all"
-                ng-click="selectUser(user)"
-                ng-class="{'bg-gray-700 text-white': darkMode, 'bg-gray-200 text-black': !darkMode}">
-                
-                <img ng-src="https://i.pravatar.cc/50?u={{ user.email }}" class="w-10 h-10 rounded-full">
+            <li ng-repeat="user in users" class="p-3 flex items-center justify-between rounded-md shadow-md bg-gray-200 cursor-pointer hover:bg-blue-400"
+                ng-click="viewProfile(user)">
                 <div>
-                    <strong>{{ user.name }}</strong> 
+                    <strong>{{ user.name }}</strong>
                     <p class="text-gray-500">{{ user.email }}</p>
                 </div>
+                <a href="profile.html?id={{user.id}}" class="px-4 py-2 bg-green-500 text-white rounded-md">View Profile</a>
             </li>
         </ul>
     </div>
-
-    <!-- User Details Modal -->
-    <div ng-if="selectedUser" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="p-6 rounded-lg shadow-lg max-w-md w-full fade-enter"
-            ng-class="{'bg-gray-800 text-white': darkMode, 'bg-white text-black': !darkMode}">
-            
-            <img ng-src="https://i.pravatar.cc/100?u={{ selectedUser.email }}" class="w-20 h-20 mx-auto rounded-full mb-4">
-            
-            <h2 class="text-xl font-bold text-center">{{ selectedUser.name }}</h2>
-            <p class="text-gray-500 text-center">{{ selectedUser.email }}</p>
-            <p class="mt-2"><strong>Phone:</strong> {{ selectedUser.phone }}</p>
-            <p><strong>Company:</strong> {{ selectedUser.company.name }}</p>
-            <p><strong>Website:</strong> <a href="https://{{ selectedUser.website }}" target="_blank" class="text-blue-400">{{ selectedUser.website }}</a></p>
-
-            <button ng-click="closeModal()"
-                class="w-full bg-red-500 text-white py-2 mt-4 rounded-md hover:bg-red-600">
-                Close
-            </button>
-        </div>
-    </div>
-
-    <script>
-    var app = angular.module("myApp", []);
-
-    app.controller("MainController", function ($scope, $http) {
-        $scope.message = "User List App";
-        $scope.users = [];
-        $scope.searchText = "";
-        $scope.selectedUser = null;
-
-        // Load dark mode preference from localStorage
-        $scope.darkMode = localStorage.getItem("darkMode") === "true";
-
-        // Fetch users from API
-        $scope.fetchUsers = function () {
-            $http.get("https://jsonplaceholder.typicode.com/users")
-                .then(function (response) {
-                    $scope.users = response.data;
-                })
-                .catch(function (error) {
-                    console.error("Error fetching users:", error);
-                });
-        };
-
-        // Select a user to show details
-        $scope.selectUser = function (user) {
-            $scope.selectedUser = user;
-        };
-
-        // Close modal
-        $scope.closeModal = function () {
-            $scope.selectedUser = null;
-        };
-
-        // Toggle Dark Mode and Save Preference
-        $scope.toggleDarkMode = function () {
-            $scope.darkMode = !$scope.darkMode;
-            localStorage.setItem("darkMode", $scope.darkMode);
-        };
-    });
-
-    </script>
 </body>
 </html>
