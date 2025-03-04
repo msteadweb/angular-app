@@ -23,13 +23,15 @@
         </button>
 
         <ul class="mt-4 space-y-2">
-            <li ng-repeat="user in users" class="p-3 flex items-center justify-between rounded-md shadow-md bg-gray-200 cursor-pointer hover:bg-blue-400"
-                ng-click="viewProfile(user)">
-                <div>
-                    <strong>{{ user.name }}</strong>
-                    <p class="text-gray-500">{{ user.email }}</p>
+            <li ng-repeat="user in users" class="p-3 flex items-center justify-between rounded-md shadow-md bg-gray-200 cursor-pointer hover:bg-blue-400">
+                <div class="flex items-center space-x-4">
+                    <img ng-src="{{ user.picture.thumbnail }}" class="w-10 h-10 rounded-full">
+                    <div>
+                        <strong>{{ user.name.first }} {{ user.name.last }}</strong>
+                        <p class="text-gray-500">{{ user.email }}</p>
+                    </div>
                 </div>
-                <a href="profile.html?id={{user.id}}" class="px-4 py-2 bg-green-500 text-white rounded-md">View Profile</a>
+                <a href="profile.html?id={{ user.login.uuid }}" class="px-4 py-2 bg-green-500 text-white rounded-md">View Profile</a>
             </li>
         </ul>
     </div>
