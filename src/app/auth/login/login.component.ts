@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // ✅ Import for *ngIf
-import { FormsModule } from '@angular/forms'; // ✅ Import for [(ngModel)]
+import { Component, inject, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
@@ -9,22 +9,31 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, FormsModule], // ✅ Add required modules
+  imports: [CommonModule, FormsModule],
 })
 export class LoginComponent {
   email = '';
   password = '';
   errorMessage: string | null = null;
 
-  constructor(private auth: Auth, private router: Router) {}
+  private auth = inject(Auth);
+  private router = inject(Router);
+  private ngZone = inject(NgZone); // ✅ Inject Angular's Zone
 
   async login() {
-    this.errorMessage = null; // ✅ Clear previous error
+    this.errorMessage = null; 
     try {
-      await signInWithEmailAndPassword(this.auth, this.email, this.password);
-      this.router.navigate(['/dashboard']); // ✅ Redirect to dashboard on success
+      const userCredential = await signInWithEmailAndPassword(this.auth, this.email, this.password);
+      
+      // ✅ Ensure Angular runs the navigation inside its zone
+      this.ngZone.run(() => {
+        this.router.navigate(['/dashboard']);
+      });
+
     } catch (error: any) {
-      this.errorMessage = error.message; // ✅ Show error message
+      this.ngZone.run(() => {
+        this.errorMessage = error.message;
+      });
     }
   }
 }
