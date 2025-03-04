@@ -16,14 +16,10 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(FormsModule),
     provideFirebaseApp(() => {
       const app = initializeApp(firebaseConfig);
-      initializeAuth(app, { persistence: browserLocalPersistence }); // ✅ Explicit persistence
+      const auth = initializeAuth(app, { persistence: browserLocalPersistence }); // ✅ Correct persistence setup
       return app;
     }),
-    provideAuth(() => {
-      const auth = getAuth();
-      auth.setPersistence(browserLocalPersistence); // ✅ Ensure persistence
-      return auth;
-    }),
+    provideAuth(() => getAuth()), // ✅ Use the initialized auth
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
   ],

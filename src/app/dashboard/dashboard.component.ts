@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // ✅ Import CommonModule for *ngIf
+import { Component, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Auth, User, onAuthStateChanged, signOut } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
@@ -8,22 +8,28 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  imports: [CommonModule], // ✅ Add CommonModule
+  imports: [CommonModule],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnDestroy {
   user: User | null = null;
-  isLoading = true; // ✅ Helps prevent UI flickering
+  isLoading = true;
+  private authSubscription: (() => void) | null = null; // ✅ Store unsubscribe function
 
   constructor(private auth: Auth, private router: Router) {
-    // ✅ Ensure user state updates correctly
-    onAuthStateChanged(this.auth, (user) => {
+    this.authSubscription = onAuthStateChanged(this.auth, (user) => {
       this.user = user;
-      this.isLoading = false; // ✅ Stop loading after checking auth state
+      this.isLoading = false;
     });
   }
 
   async logout() {
     await signOut(this.auth);
     this.router.navigate(['/login']);
+  }
+
+  ngOnDestroy() {
+    if (this.authSubscription) {
+      this.authSubscription(); // ✅ Unsubscribe to avoid memory leaks
+    }
   }
 }
