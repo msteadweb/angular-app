@@ -12,13 +12,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 
     <style>
-        /* Smooth fade animation */
+        /* Modal fade-in animation */
         .fade-enter {
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transform: scale(0.95);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
         .fade-enter-active {
             opacity: 1;
+            transform: scale(1);
         }
     </style>
 </head>
@@ -50,22 +52,29 @@
         <!-- User List -->
         <ul class="mt-4 space-y-2">
             <li ng-repeat="user in users | filter:searchText" 
-                class="p-3 rounded-md shadow-md cursor-pointer hover:bg-blue-400 transition-all"
+                class="p-3 flex items-center space-x-4 rounded-md shadow-md cursor-pointer hover:bg-blue-400 transition-all"
                 ng-click="selectUser(user)"
                 ng-class="{'bg-gray-700 text-white': darkMode, 'bg-gray-200 text-black': !darkMode}">
-                <strong>{{ user.name }}</strong> - <span class="text-gray-600">{{ user.email }}</span>
+                
+                <img ng-src="https://i.pravatar.cc/50?u={{ user.email }}" class="w-10 h-10 rounded-full">
+                <div>
+                    <strong>{{ user.name }}</strong> 
+                    <p class="text-gray-500">{{ user.email }}</p>
+                </div>
             </li>
         </ul>
     </div>
 
     <!-- User Details Modal -->
     <div ng-if="selectedUser" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="p-6 rounded-lg shadow-lg max-w-md w-full"
+        <div class="p-6 rounded-lg shadow-lg max-w-md w-full fade-enter"
             ng-class="{'bg-gray-800 text-white': darkMode, 'bg-white text-black': !darkMode}">
             
-            <h2 class="text-xl font-bold">{{ selectedUser.name }}</h2>
-            <p class="text-gray-500">{{ selectedUser.email }}</p>
-            <p><strong>Phone:</strong> {{ selectedUser.phone }}</p>
+            <img ng-src="https://i.pravatar.cc/100?u={{ selectedUser.email }}" class="w-20 h-20 mx-auto rounded-full mb-4">
+            
+            <h2 class="text-xl font-bold text-center">{{ selectedUser.name }}</h2>
+            <p class="text-gray-500 text-center">{{ selectedUser.email }}</p>
+            <p class="mt-2"><strong>Phone:</strong> {{ selectedUser.phone }}</p>
             <p><strong>Company:</strong> {{ selectedUser.company.name }}</p>
             <p><strong>Website:</strong> <a href="https://{{ selectedUser.website }}" target="_blank" class="text-blue-400">{{ selectedUser.website }}</a></p>
 
