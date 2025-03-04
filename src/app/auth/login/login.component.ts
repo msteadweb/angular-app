@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';  // ✅ Import CommonModule
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],  // ✅ Add CommonModule
+  imports: [FormsModule, CommonModule],  // ✅ Ensure FormsModule is imported
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
