@@ -1,5 +1,15 @@
 <h2>Settings</h2>
 
+<div class="dark-mode-toggle">
+  <label class="toggle-switch">
+    <input type="checkbox" id="darkModeToggle" (change)="toggleDarkMode($event)" [checked]="isDarkMode">
+    <span class="slider"></span>
+  </label>
+  <span>Dark Mode</span>
+</div>
+
+
+
 <form (ngSubmit)="updateProfile()">
   <label for="name">Display Name:</label>
   <input type="text" id="name" [(ngModel)]="displayName" name="displayName" required />

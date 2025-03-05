@@ -4,7 +4,6 @@ import { HelloWorldComponent } from './hello-world/hello-world.component';
 import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -16,6 +15,7 @@ export class AppComponent implements OnInit {
   title = 'angular-app';
   user: User | null = null; // Track logged-in user
   isLoading = true; // Prevent UI flicker
+  isDarkMode = false; // Track dark mode state
 
   constructor(private auth: Auth, private router: Router) {}
 
@@ -28,5 +28,24 @@ export class AppComponent implements OnInit {
         this.router.navigate(['/dashboard']); // ✅ Ensure logged-in users go to dashboard
       }
     });
+
+    // Load dark mode state from local storage
+    const savedMode = localStorage.getItem('darkMode');
+    this.isDarkMode = savedMode === 'enabled';
+    this.applyDarkMode();
+  }
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('darkMode', this.isDarkMode ? 'enabled' : 'disabled');
+    this.applyDarkMode();
+  }
+
+  applyDarkMode() {
+    if (this.isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
   }
 }
