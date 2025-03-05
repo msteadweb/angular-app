@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   isLoading = true; // Prevent UI flicker
   isDarkMode = false; // Track dark mode state
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router) { }
 
   ngOnInit() {
     onAuthStateChanged(this.auth, (user) => {

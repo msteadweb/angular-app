@@ -2,19 +2,18 @@
 <p *ngIf="isLoading">Checking authentication...</p>
 
 <nav>
-    <a routerLink="/dashboard">Dashboard</a>
-    <a routerLink="/settings">Settings</a> <!-- ✅ New link -->
-    <button (click)="logout()">Logout</button>
-  </nav>
-  
+  <a routerLink="/dashboard">Dashboard</a>
+  <a routerLink="/settings">Settings</a> <!-- ✅ New link -->
+  <button (click)="logout()">Logout</button>
+</nav>
+
 
 <div *ngIf="user">
-    <h2>Welcome, {{ user.displayName || 'User' }}!</h2>
-    <p>Email: {{ user.email }}</p>
-    <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Profile Picture" width="100">
-    
-    <button (click)="logout()">Logout</button>
-  </div>
+  <h2>Hello, {{ user.displayName || 'User' }}!</h2>
+  <p>Email: {{ user.email }}</p>
+  <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Profile Picture" width="100">
+
+</div>
 
 <!-- ✅ Redirect to login if not logged in -->
 <p *ngIf="!isLoading && !user">

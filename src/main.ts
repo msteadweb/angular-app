@@ -7,18 +7,20 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth, browserLocalPersistence, initializeAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
-import { provideHttpClient } from '@angular/common/http';  // ✅ Add this
+import { provideHttpClient } from '@angular/common/http';
 import { firebaseConfig } from './environments/firebase.config';
 import { routes } from './app/routes';
+import { provideAnimations } from '@angular/platform-browser/animations'; // ✅ Fixed typo
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideAnimations(), // ✅ Fixed typo (was 'provideAnimantions')
     provideRouter(routes),
-    provideHttpClient(),  // ✅ Fix HttpClient error
+    provideHttpClient(),
     importProvidersFrom(FormsModule),
     provideFirebaseApp(() => {
       const app = initializeApp(firebaseConfig);
-      const auth = initializeAuth(app, { persistence: browserLocalPersistence });
+      initializeAuth(app, { persistence: browserLocalPersistence }); // ✅ No need to return auth instance here
       return app;
     }),
     provideAuth(() => getAuth()),
