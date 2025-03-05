@@ -1,16 +1,24 @@
-<div class="settings-container">
-    <h2>Update Profile</h2>
-    <form (submit)="updateProfile()">
-      <label for="name">Display Name:</label>
-      <input type="text" id="name" [(ngModel)]="displayName" required />
-  
-      <label for="photo">Photo URL:</label>
-      <input type="text" id="photo" [(ngModel)]="photoURL" />
-  
-      <button type="submit" [disabled]="isLoading">
-        {{ isLoading ? 'Updating...' : 'Update Profile' }}
-      </button>
-    </form>
-    <p *ngIf="message">{{ message }}</p>
+<h2>Settings</h2>
+
+<form (ngSubmit)="updateProfile()">
+  <label for="name">Display Name:</label>
+  <input type="text" id="name" [(ngModel)]="displayName" name="displayName" required />
+
+  <label for="photo">Profile Picture:</label>
+  <input type="file" id="photo" (change)="onFileSelected($event)" accept="image/*" />
+
+  <div *ngIf="photoPreview">
+    <p>Preview:</p>
+    <img [src]="photoPreview" alt="Profile Preview" width="100" height="100" />
   </div>
-  
+
+  <button type="submit" [disabled]="isLoading">Update Profile</button>
+</form>
+
+<p *ngIf="message">{{ message }}</p>
+
+
+<p *ngIf="isLoading">Updating...</p>
+
+
+<a routerLink="/dashboard">Back to Dashboard</a>

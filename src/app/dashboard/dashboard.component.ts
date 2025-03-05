@@ -1,14 +1,14 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Auth, User, onAuthStateChanged, signOut } from '@angular/fire/auth';
-import { Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router'; // ✅ Import RouterModule
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule] // ✅ Add RouterModule
 })
 export class DashboardComponent implements OnDestroy {
   user: User | null = null;
@@ -32,5 +32,9 @@ export class DashboardComponent implements OnDestroy {
       this.authSubscription(); // ✅ Properly unsubscribe
       this.authSubscription = null; // ✅ Avoid multiple calls
     }
+  }
+
+  navigateToSettings() {
+    this.router.navigate(['/settings']); // ✅ Ensure navigation works
   }
 }
