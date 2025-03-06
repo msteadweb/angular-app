@@ -1,65 +1,40 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Auth, User, onAuthStateChanged, signOut } from '@angular/fire/auth';
-import { RouterModule, Router } from '@angular/router';
-import { Firestore, collection, onSnapshot } from '@angular/fire/firestore';
+import { RouterModule, Router } from '@angular/router'; // ✅ Import RouterModule
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule] // ✅ Add RouterModule
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnDestroy {
   user: User | null = null;
   isLoading = true;
-  transactions: any[] = [];
-  private authSubscription: (() => void) | null = null;
-  private transactionSubscription: (() => void) | null = null;
+  private authSubscription: (() => void) | null = null; // ✅ Correct type for unsubscribe function
 
-  constructor(private auth: Auth, private router: Router, private firestore: Firestore) {}
-
-  ngOnInit() {
+  constructor(private auth: Auth, private router: Router) {
     this.authSubscription = onAuthStateChanged(this.auth, (user) => {
       this.user = user;
       this.isLoading = false;
-      if (user) {
-        this.fetchTransactions();
-      }
-    });
-  }
-
-  fetchTransactions() {
-    const transactionsRef = collection(this.firestore, 'transactions');
-
-    this.transactionSubscription = onSnapshot(transactionsRef, (snapshot) => {
-      this.transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    }, (error) => {
-      console.error('Error fetching transactions:', error);
     });
   }
 
   async logout() {
-    const confirmLogout = confirm('Are you sure you want to log out?');
-    if (confirmLogout) {
-      await signOut(this.auth);
-      this.router.navigate(['/login']);
-    }
+    await signOut(this.auth);
+    this.router.navigate(['/login']);
   }
 
   ngOnDestroy() {
     if (this.authSubscription) {
-      this.authSubscription();
-      this.authSubscription = null;
-    }
-    if (this.transactionSubscription) {
-      this.transactionSubscription();
-      this.transactionSubscription = null;
+      this.authSubscription(); // ✅ Properly unsubscribe
+      this.authSubscription = null; // ✅ Avoid multiple calls
     }
   }
 
   navigateToSettings() {
-    this.router.navigate(['/settings']);
+    this.router.navigate(['/settings']); // ✅ Ensure navigation works
   }
 }

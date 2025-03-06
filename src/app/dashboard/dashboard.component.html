@@ -1,63 +1,21 @@
-<!-- ✅ Show loading spinner while checking auth state -->
-<div *ngIf="isLoading" class="loading">
-  <p>Checking authentication...</p>
-</div>
+<!-- ✅ Show loading message while checking auth state -->
+<p *ngIf="isLoading">Checking authentication...</p>
 
-<!-- ✅ Navigation Bar -->
-<nav class="navbar">
-  <div class="nav-links">
-    <a routerLink="/dashboard">🏠 Dashboard</a>
-    <a routerLink="/settings">⚙️ Settings</a>
-  </div>
-
-  <!-- ✅ Profile Dropdown -->
-  <div class="profile-dropdown" *ngIf="user">
-    <button class="dropdown-btn">
-      <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Profile Picture" class="profile-pic">
-      {{ user.displayName || 'User' }}
-    </button>
-    <div class="dropdown-menu">
-      <button (click)="logout()">Logout</button>
-    </div>
-  </div>
+<nav>
+  <a routerLink="/dashboard">Dashboard</a>
+  <a routerLink="/settings">Settings</a> <!-- ✅ New link -->
+  <button (click)="logout()">Logout</button>
 </nav>
 
-<!-- ✅ Show User Info -->
-<div *ngIf="user" class="user-info">
-  <h2>Welcome, {{ user.displayName || 'User' }}! 👋</h2>
+
+<div *ngIf="user">
+  <h2>Hello, {{ user.displayName || 'User' }}!</h2>
   <p>Email: {{ user.email }}</p>
-  <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Profile Picture" class="large-profile-pic">
+  <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Profile Picture" width="100">
+
 </div>
 
-<!-- ✅ Recent Transactions Section -->
-<h3>Recent Transactions</h3>
-
-<div *ngIf="transactions.length > 0; else noTransactions">
-  <table class="transactions-table">
-    <thead>
-      <tr>
-        <th>Amount</th>
-        <th>Type</th>
-        <th>Date</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let transaction of transactions">
-        <td>{{ transaction.amount | currency }}</td>
-        <td>{{ transaction.type }}</td>
-        <td>{{ transaction.date | date:'short' }}</td>
-        <td>{{ transaction.status }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<ng-template #noTransactions>
-  <p>No transactions available.</p>
-</ng-template>
-
-<!-- ✅ Redirect if not logged in -->
-<p *ngIf="!isLoading && !user" class="redirect-msg">
+<!-- ✅ Redirect to login if not logged in -->
+<p *ngIf="!isLoading && !user">
   Not logged in. Redirecting...
 </p>

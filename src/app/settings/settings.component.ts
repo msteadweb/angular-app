@@ -1,3 +1,4 @@
+
 import { Component, Renderer2 } from '@angular/core';
 import { Auth, updateProfile, User, onAuthStateChanged, sendPasswordResetEmail } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
